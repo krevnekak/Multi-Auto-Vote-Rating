@@ -833,6 +833,10 @@ function editProject(project, switchToEdit) {
     }
     if (project.rating !== 'Custom' && !funcRating.notRequiredNick?.(project)) {
         document.getElementById('nick').value = project.nick
+
+        if (funcRating.needAdditionalOrigins?.(project)?.includes?.('*://*.vk.com/*')) {
+            document.getElementById('vk-account-id').value = project?.vkAccountId ?? ""
+        }
     }
     if (funcRating.limitedCountVote?.()) {
         document.getElementById('countVote').value = project.maxCountVote
@@ -1027,6 +1031,13 @@ document.getElementById('append').addEventListener('submit', async(event)=>{
                 project.ratingMain = domain
             }
         }
+    }
+
+    const vkAccountId = document.getElementById('vk-account-id').value
+    if (vkAccountId) {
+        project.vkAccountId = vkAccountId
+    } else if (project.vkAccountId !== undefined) {
+        delete project.vkAccountId
     }
 
     if (project.rating !== 'Custom' && !funcRating.notRequiredNick?.(project)) {
@@ -1257,8 +1268,21 @@ async function addProject(project, element) {
             }
         } else {
             // noinspection JSUnresolvedFunction
-            let found = await db.countFromIndex('projects', 'rating, id', [project.rating, project.id])
-            if (found > 0) {
+            let alreadyAdded = false
+            let cursor = await db.transaction('projects').store.index('rating').openCursor(project.rating)
+
+            while (cursor) {
+                const storedProject = cursor.value
+
+                if (storedProject.nick === project.nick && storedProject.id === project.id) {
+                    alreadyAdded = true
+                    break
+                }
+
+                cursor = await cursor.continue()
+            }
+
+            if (alreadyAdded) {
                 const message = chrome.i18n.getMessage('alreadyAdded')
                 if (!secondBonusText) {
                     createNotif(message, 'success', {element})
@@ -2091,6 +2115,8 @@ function linkChanged(event, reset) {
         document.getElementById('nick').parentElement.style.display = 'none'
         document.getElementById('nick').required = false
         document.getElementById('nick').placeholder = chrome.i18n.getMessage('enterNick')
+        document.getElementById('vk-account-id').value = ""
+        document.getElementById('vk-account-id').parentElement.style.display = 'none'
         document.getElementById('countVote').parentElement.style.display = 'none'
         document.getElementById('countVote').required = false
         document.getElementById('ordinalWorld').parentElement.style.display = 'none'
@@ -2122,6 +2148,10 @@ function linkChanged(event, reset) {
         document.getElementById('nick').required = true
         if (funcRating.optionalNick?.()) {
             document.getElementById('nick').placeholder = chrome.i18n.getMessage('enterNickOptional')
+        }
+
+        if (funcRating.needAdditionalOrigins?.(project)?.includes?.('*://*.vk.com/*')) {
+            document.getElementById('vk-account-id').parentElement.removeAttribute('style')
         }
     }
     if (funcRating.limitedCountVote?.()) {
@@ -2161,6 +2191,8 @@ function ratingChanged(event, reset) {
         document.getElementById('nick').parentElement.style.display = 'none'
         document.getElementById('nick').required = false
         document.getElementById('nick').placeholder = chrome.i18n.getMessage('enterNick')
+        document.getElementById('vk-account-id').parentElement.style.display = 'none'
+        document.getElementById('vk-account-id').value = ""
         document.getElementById('chooseGame').parentElement.style.display = 'none'
         document.getElementById('chooseGame').name = 'chooseGame'
         document.getElementById('urlGameTooltip1').textContent = ''
@@ -2227,6 +2259,9 @@ function ratingChanged(event, reset) {
     let funcRating = allProjects[rating]
 
     if (!funcRating) return
+
+    // const project = funcRating.parseURL(new URL(this.value))
+    // console.log(project)
     laterChooseManual = true
 
     if (!funcRating.notRequiredId?.()) {
@@ -2243,6 +2278,10 @@ function ratingChanged(event, reset) {
         document.getElementById('nick').required = true
         if (funcRating.optionalNick?.()) {
             document.getElementById('nick').placeholder = chrome.i18n.getMessage('enterNickOptional')
+        }
+
+        if (funcRating.needAdditionalOrigins?.({listing: "project"})?.includes?.('*://*.vk.com/*')) {
+            document.getElementById('vk-account-id').parentElement.removeAttribute('style')
         }
     }
 
@@ -2374,10 +2413,13 @@ document.getElementById('chooseListing').addEventListener('change', function () 
         if (this.value === 'servers') {
             document.getElementById('nick').required = false
             document.getElementById('nick').parentElement.style.display = 'none'
+            document.getElementById('vk-account-id').parentElement.style.display = 'none'
+            document.getElementById('vk-account-id').value = ""
             document.getElementById('rewardAttention').removeAttribute('style')
         } else {
             document.getElementById('nick').required = true
             document.getElementById('nick').parentElement.removeAttribute('style')
+            document.getElementById('vk-account-id').parentElement.removeAttribute('style')
             document.getElementById('rewardAttention').style.display = 'none'
         }
     }

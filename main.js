@@ -137,7 +137,6 @@ async function upgrade(db, oldVersion, newVersion, transaction) {
 
     if (oldVersion === 0) {
         const projects = db.createObjectStore('projects', {autoIncrement: true})
-        projects.createIndex('rating, id, nick', ['rating', 'id', 'nick'])
         projects.createIndex('rating, id', ['rating', 'id'])
         projects.createIndex('rating', 'rating')
         const other = db.createObjectStore('other')

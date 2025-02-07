@@ -116,10 +116,50 @@ async function checkAll(first) {
         if (document.querySelector('#error .vkuiModalCardBase__container')) return
 
         if (document.querySelector('.vkc__AuthRoot__contentIn')) {
-            const timer = setInterval(()=>{
+            const timer = setInterval(async ()=>{
+                const project = await getProject()
+
                 if (document.querySelector('.vkc__AcceptPrivacyPolicy__content button[type="submit"]')) {
                     clearInterval(timer)
-                    document.querySelector('.vkc__AcceptPrivacyPolicy__content button[type="submit"]').click()
+
+                    if (project?.vkAccountId) {
+                        let completed = false
+                        // If the account is only one and the id of the VK account is specified in the settings, then we check whether we are trying to log in to the right account.
+                        chrome.cookies.getAll({}, function(cookies) {
+                            const targetCookies = cookies.filter(cookie => {
+                                try {
+                                    const cookieData = JSON.parse(cookie.value);
+                                    if (cookieData.user_id && Number(cookieData.user_id) === Number(project.vkAccountId)) {
+                                        return true
+                                    }
+
+                                    return false
+                                } catch (e) {
+                                    return false; // Пропускаем куки, которые не в JSON-формате
+                                }
+                            });
+
+                            if (targetCookies.length > 0) {
+                                clearInterval(timer)
+                                document.querySelector('.vkc__AcceptPrivacyPolicy__content button[type="submit"]').click()
+                            } else {
+                                chrome.runtime.sendMessage({errorAuthVK: chrome.i18n.getMessage('notLoginedInVk', project.vkAccountId)})
+                            }
+                        });
+                    } else {
+                        document.querySelector('.vkc__AcceptPrivacyPolicy__content button[type="submit"]').click()
+                    }
+                } else if (document.querySelector(".vkc__MultiAccountList__container")) {
+                    // Multi account select
+                    clearInterval(timer)
+
+                    const needAccount = document.querySelector(`.vkuiSimpleCell[role="button"][data-test-id="account-item-${project.vkAccountId}"]`)
+
+                    if (needAccount) {
+                        needAccount.click()
+                    } else {
+                        chrome.runtime.sendMessage({errorAuthVK: chrome.i18n.getMessage('notLoginedInVk', project.vkAccountId)})
+                    }
                 }
             }, 1000)
             return
