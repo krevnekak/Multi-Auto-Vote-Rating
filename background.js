@@ -1396,15 +1396,36 @@ function sendNotification(title, message, type, notificationId) {
     if (settings?.disabledNotifWarn && type === 'warn') return
     if (settings?.disabledNotifError && type === 'error') return
 
+    switch (type) {
+        case "start":
+            title = `✅ ${title}`
+            break
+        case "info":
+            title = `ℹ️ ${title}`
+            break
+        case "warn":
+            title = `⚠️ ${title}`
+            break
+        case "error":
+            title = `❌ ${title}`
+            break
+    }
+
     let notification = {
         type: 'basic',
-        iconUrl: 'images/icon128.png',
+        iconUrl: "images/logo.png",
         title: title,
         message: message
     }
-    chrome.notifications.create(notificationId, notification, function() {})
+
+    chrome.notifications.create(`${Date.now()}_${notificationId}`, notification, function(context) {
+        console.log("Last error notification:", chrome.runtime.lastError);
+        console.log("Context notification:", context)
+    })
 }
 chrome.notifications.onClicked.addListener(async function (notificationId) {
+    notificationId = notificationId.replace(/^\d+_/, "")
+
     if (notificationId.startsWith('openTab_')) {
         try {
             const tabId = Number(notificationId.replace('openTab_', ''))
