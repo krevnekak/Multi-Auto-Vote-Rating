@@ -1,4 +1,7 @@
-# Auto Vote Rating - Chrome Extension
+# Multi: Auto Vote Rating - Chrome Extension
+
+### Realizes the possibility of multi-voting from different accounts (only VKontakte for now)
+
 <details>
 <summary>List of sites that the extension supports</summary>
 <a href="http://topcraft.club/">topcraft.club</a>  
