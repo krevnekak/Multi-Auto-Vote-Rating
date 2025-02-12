@@ -784,7 +784,8 @@ nav .logo img {
 }
 
 #submitCancelProject {
-	background: #fff;
+	background: rgba(42, 42, 47, 0.2);
+	color: #2A2A2F;
 }
 
 .editSubtitle {
