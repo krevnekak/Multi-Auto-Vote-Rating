@@ -148,12 +148,8 @@
 </details>
 
 ### Links to the extension where you can install it:
-[Chrome Web Store](https://chrome.google.com/webstore/detail/auto-vote-minecraft-ratin/mdfmiljoheedihbcfiifopgmlcincadd)   
-[Firefox Add-ons](https://addons.mozilla.org/ru/firefox/addon/auto-vote-rating/) (no longer supported)   
-[Opera Addons](https://addons.opera.com/ru/extensions/details/auto-vote-minecraft-rating/) (not published, waiting for an endless moderation check)   
-[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/auto-vote-rating/ecoifpgiojfhmihcfomafdcmkphafpba)
-
-### Support via Discord: https://discord.com/invite/GyvMtbU
+[Chrome Web Store](https://chrome.google.com/webstore/detail/auto-vote-minecraft-ratin/mdfmiljoheedihbcfiifopgmlcincadd) (not yet published)  
+[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/auto-vote-rating/ecoifpgiojfhmihcfomafdcmkphafpba) (not yet published)
 
 ## Install the extension from zip archive
 Here is a short guide how to install an unpacked extension on Google Chrome or Chromium-based browsers
@@ -165,6 +161,7 @@ Here is a short guide how to install an unpacked extension on Google Chrome or C
 
 4. Click on the "Load unpacked" button and select the directory where you unpacked the archive.
 
+### Original repository: [\*click\*](https://github.com/Serega007RU/Auto-Vote-Rating)
 
 ## Libraries used
 ### [IDB](https://github.com/jakearchibald/idb)
