@@ -16,8 +16,7 @@
         <nav>
             <div class="logo">
                 <img src="images/logo.png">
-                <div>A.V.R.</div>
-                <a id="versionLabel" class="link" target="_blank" href="https://github.com/Serega007RU/Auto-Vote-Rating/wiki/Common-or-MultiVote%3F-What-does-it-mean%3F">Common</a>
+                <div>Multi: A.V.R.</div>
             </div>
             <div class="navigation">
                 <button class="tablinks" id="addTab" data-tab="append">
@@ -43,7 +42,7 @@
             <div id="append" class="tabcontent" style="display: none;">
                 <h4 data-resource="addTitle"></h4>
                 <div class="editSubtitle" style="display: none;"></div>
-                <hr color="#5A5A5C">
+                <hr class="base-hr">
                 <form id="addProject" class="addProject addProjectExpertManual">
                     <input type="checkbox" name="switchAddMode" id="switchAddMode" class="switchAddMode">
                     <label for="switchAddMode" data-resource="switchAddMode"></label>
@@ -68,8 +67,11 @@
                         <div class="input-block">
                             <label for="vk-account-id">
                                 <span data-resource="vkAccountIdLabel1"></span> <a href="https://id.vk.com/account/#/personal" data-resource="vkAccountIdLabel2"></a> <span data-resource="vkAccountIdLabel3"></span>
-                                <span class="tooltip1">
-                                    <span data-resource="vkAccountTooltip" class="tooltip1text"></span>
+
+                                <span style="position: relative; top: 3px">
+                                       <span class="tooltip2">
+                                    <span data-resource="vkAccountTooltip" class="tooltip2text"></span>
+                                </span>
                                 </span>
                             </label>
                             <input class="input" name="vk-account-id" id="vk-account-id" placeholder="ID аккаунта ВК" type="text" spellcheck="false">
@@ -285,7 +287,7 @@
             <!-- Настройки -->
             <div id="settings" class="tabcontent" style="display: none;">
                 <h4 data-resource="optionsExtension"></h4>
-                <hr color="#5A5A5C">
+                <hr class="base-hr">
                 <div class="userSettings">
                     <div>
                         <div class="label-block">
@@ -451,7 +453,7 @@
             <!-- Добавленные -->
             <div id="added" class="tabcontent" style="display: none;">
                 <h4 data-resource="addedProjects"></h4>
-                <hr color="#5A5A5C">
+                <hr class="base-hr">
                 <p id="addedLoading" data-resource="load"></p>
                 <p id="notAddedAll" data-resource="notAddedAll" style="display: none;"></p>
                 <div class="projectsBlock">
@@ -462,7 +464,7 @@
             <!-- О расширении -->
             <div id="help" class="tabcontent" style="display: none;">
                 <h4 data-resource="help"></h4>
-                <hr color="#5A5A5C">
+                <hr class="base-hr">
                 <div class="aboutProject">
                 	<a target="_blank" href="https://discord.gg/GyvMtbU" class="social"><img src="images/icons/ds.svg" alt="ds"></a>
                     <div class="cont">

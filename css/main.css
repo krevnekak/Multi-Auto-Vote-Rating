@@ -4,7 +4,7 @@
 }
 
 body {
-	background: #121214;
+	background: #ebebeb;
 	overflow-x: hidden;
 }
  
@@ -12,29 +12,37 @@ body * {
 	font-family: Roboto, serif;
 }
 
+.base-hr {
+	border: none;
+	border-top: 1px solid rgba(42, 42, 47, 0.08);
+	border-radius: 3px;
+	margin-bottom: 35px;
+}
+
 /* Навигация */
 nav {
 	z-index: 10;
 	transition: .5s left;
 	top: 0; left: 0;
-	width: 100px;
+	width: 140px;
 	height: 100%;
 	position: fixed;
-	background: #2A2A2F;
+	background: #fff;
 }
 
 nav div.navigation > button {
 	padding: 5px;
 	font-size: 13px;
 	opacity: .5;
-	color: #fff;
-	background: transparent;
+	color: #2A2A2F;
+	background: rgba(42, 42, 47, 0.2);
 	transition: .2s opacity;
-	margin-bottom: 10px;
+	border-radius: 10px;
+	margin: 5px 5px;
 	outline: none !important;
 	border: none !important;
 	display: block;
-	width: 100%;
+	width: calc(100% - 10px);
 	height: 70px;
 }
 
@@ -48,13 +56,13 @@ nav div.navigation > button img {
 
 nav div.navigation > button.active {
 	opacity: 1;
- 	background: #1a7bee;
+ 	background: #ffb600;
 }
 
 nav .logo {
 	padding-bottom: 10px;
-	color: #fff;
-	border-bottom: 1px solid #ccc !important;
+	color: #2A2A2F;
+	font-weight: 600;
 }
 
 nav .logo div {
@@ -62,8 +70,8 @@ nav .logo div {
 }
 
 nav .logo img {
-	margin: 0 auto 10px;
-	width: 90%;
+	margin: 20px auto 20px;
+	width: 80%;
     display: block;
 }
 
@@ -73,7 +81,7 @@ nav .logo img {
 	top: 5px; left: 5px;
 	border-radius: 10px;
 	padding: 5px;
-	background: #2A2A2F;
+	background: #fff;
 	position: absolute;
 	width: 36px;
 	height: 36px;
@@ -141,7 +149,7 @@ nav .logo img {
 @media(max-width: 950px) {
     nav {
     	width: 250px;
-    	left: -250px;    	
+    	left: -250px;
     }
 
     nav.active {
@@ -202,13 +210,13 @@ nav .logo img {
 }
 
 #modals .modal {
-    padding: 7px;
+    padding: 25px;
     margin: auto;
     position: fixed;
     top: 0; bottom: 0; right: 0; left: 0;
     width: 400px;
     height: 350px;
-    background: #2a2a2f;
+    background: #fff;
     border-radius: 10px;
     transform: scale(0);
     z-index: 30;
@@ -248,10 +256,9 @@ nav .logo img {
 #modals .modal .head {
     justify-content: space-between;
     display: flex;
-    color: #1a7bee;
+    color: #ffb600;
     font-size: 25px;
     padding-bottom: 10px;
-    border-bottom: solid 1px #ccc
 }
 
 #modals .modal .close {
@@ -276,7 +283,7 @@ nav .logo img {
     position: absolute;
     width: 25px;
     border-radius: 100px;
-    height: 4px;
+    height: 2px;
     background: #ccc
 }
 
@@ -291,7 +298,7 @@ nav .logo img {
 #modals .modal .content .message {
 	overflow-y: auto;
     font-size: 15px;
-    color: #fff;
+    color: #2A2A2F;
     text-align: center;
     padding: 5px;
     margin: 20px auto;
@@ -322,7 +329,7 @@ nav .logo img {
 }
 
 #modals .modal .content .message table tbody tr:nth-child(odd) {
-	background-color: #1b1b1e; 
+	background-color: #ffb600;
 }
 
 #modals .modal .content .message table tbody tr td {
@@ -355,7 +362,7 @@ nav .logo img {
 }
 
 #modals .modal#addFastProject .content {
-	color: #fff;
+	color: #2A2A2F;
 }
 
 @media(max-width: 450px) {
@@ -372,16 +379,17 @@ nav .logo img {
 .container {
 	margin: 60px auto auto;
 	width: 1000px;
-	background: #1b1b1e;
+	background: #fff;
 	border-radius: 10px;
-	padding: 15px;
-	color: #fff;
+	padding: 25px;
+	color: #2A2A2F;
 }
 
 .tabcontent > h4 {
-	color: #1a7bee;
+	color: #ffb600;
 	text-align: center;
 	font-size: 24px;
+	margin-bottom: 20px;
 	font-weight: 600;
 }
 
@@ -391,14 +399,14 @@ nav .logo img {
 
 .projectsBlock .buttonBlock {
 	margin-top: 15px;
-	margin-bottom: 20px;
+	margin-bottom: 40px;
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	grid-gap: 15px;
 }
 
 .projectsBlock .contentBlock .listcontent li {
-	background: #121214;
+	background: rgba(42, 42, 47, 0.2);
 	margin-bottom: 10px;
 	justify-content: space-between;
 	display: flex;
@@ -413,9 +421,15 @@ nav .logo img {
 }
 
 .projectsBlock .contentBlock .listcontent li .controlItems {
+	background: rgba(42, 42, 47, 0.2);
+	border-radius: 5px;
 	display: flex;
 	margin: auto 0;
 	justify-content: space-between;
+}
+
+.projectsBlock .contentBlock .listcontent li .controlItems div:last-child {
+	margin: 0;
 }
 
 .projectsBlock .contentBlock .listcontent li .message {
@@ -465,7 +479,7 @@ nav .logo img {
 }
 
 .projectStats img:hover {
-	background: #1a7bee !important;
+	background: #ffb600 !important;
 }
 
 .projectStats img[src="images/icons/delete.svg"]:hover {
@@ -473,7 +487,11 @@ nav .logo img {
 }
 
 .projectsBlock .contentBlock .listcontent li:nth-child(odd) {
-	background: #2a2a2f;
+	background: #fff;
+}
+
+.projectsBlock .contentBlock .listcontent li:nth-child(even) .controlItems {
+	background: transparent;
 }
 
 .projectsBlock .buttonBlock button {
@@ -493,7 +511,7 @@ nav .logo img {
     display: flex;
     width: 30px;
     position: absolute;
-    color: #000;
+    color: #2A2A2F;
     right: -10px;
     background: #ccc;
 }
@@ -671,11 +689,11 @@ nav .logo img {
 #generalStats {
 	text-align: center;
 	opacity: .9;
-    background: #1a7bee;
+    background: #ffb600;
 	cursor: pointer;
 	color: #fff;
     padding: 5px;
-    border-radius: 3px;
+    border-radius: 5px;
 	display: none;
 	transition: .2s opacity;
 }
@@ -746,11 +764,15 @@ nav .logo img {
 	border-radius: 5px;
 	border: none !important;
 	outline: none !important;
-	background: #1a7bee;
+	background: #ffb600;
 	color: #fff;
 	font-size: 19px;
 	padding: 10px 20px;
 	text-align: center;
+}
+
+.selectsite {
+	color: #2A2A2F;
 }
 
 .selectsite:hover,
@@ -762,7 +784,7 @@ nav .logo img {
 }
 
 #submitCancelProject {
-	background: #2a2a2f;
+	background: #fff;
 }
 
 .editSubtitle {
@@ -779,12 +801,16 @@ nav .logo img {
 	justify-content: center;
 	display: flex;
 	font-size: 14px;
-	background: #2a2a2f;
+	background: rgba(42, 42, 47, 0.05);
+}
+
+.file {
+	background: #ffb600;
 }
 
 .selectsite.activeList {
 	opacity: 1;
-	background: #1a7bee;
+	background: #ffb600;
 }
 
 .selectsite,
@@ -813,12 +839,12 @@ nav .logo img {
 
 .tooltip1,
 .tooltip2 {
-	color: #fff;
+	color: #2A2A2F;
 	margin-left: 5px;
 	position: absolute;
 	display: inline-block;
 	border-radius: 25px;
-	background: #1a7bee;
+	background: #ffb600;
 	width: 19px;
 	height: 19px;
 	cursor: help;
@@ -842,14 +868,15 @@ nav .logo img {
  	visibility: hidden;
  	overflow-wrap: anywhere;
  	width: 350px;
- 	background-color: #000;
- 	color: #fff;
+ 	background-color: #ebebeb;
+	border: 2px solid #fff;
+ 	color: #2A2A2F;
  	text-align: center;
- 	border-radius: 6px;
- 	padding: 5px;
+ 	border-radius: 10px;
+ 	padding: 15px;
  	position: absolute;
  	z-index: 10;
- 	margin-left: -183px;
+ 	margin-left: -195px;
  	opacity: 0;
  	transition: opacity 0.3s;
  	font-size: initial !important;
@@ -883,7 +910,7 @@ nav .logo img {
  	border-width: 5px;
  	border-style: solid;
  }
- 
+
 .projectStats .tooltiptext::after,
 .tooltip1 .tooltip1text::after {
 	top: 100%;
@@ -950,7 +977,7 @@ nav .logo img {
 
 .switchAddMode {
 	display: none;
-	position: absolute; 
+	position: absolute;
     visibility: hidden !important;
 }
 
@@ -993,7 +1020,7 @@ nav .logo img {
 
 .switchAddMode:checked + label:after {
 	right: 0px;
-	background: #1a7bee;
+	background: #ffb600;
 }
 
 .checkbox {
@@ -1006,7 +1033,7 @@ nav .logo img {
 	position: relative;
 	padding: 4px 0 4px 35px;
 	font-size: 15px;
-	color: #ddd;
+	color: #2A2A2F;
 	cursor: pointer;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -1020,7 +1047,7 @@ input.switchAddMode:disabled + label {
 }
 
 .checkbox + label:last-child {
-	margin-bottom: 0; 
+	margin-bottom: 0;
 }
 
 .checkbox + label:before {
@@ -1028,7 +1055,7 @@ input.switchAddMode:disabled + label {
 	display: block;
 	width: 20px;
 	height: 20px;
-	border: 1px solid #6cc0e5;
+	border: 1px solid #ffb600;
 	border-radius: 2px;
 	position: absolute;
 	left: 0;
@@ -1058,9 +1085,10 @@ input.switchAddMode:disabled + label {
 .label-block label {
 	position: relative;
 	color: #696969;
-	font-size: 14px;
+	font-size: 16px;
+	font-weight: 600;
 	display: inline-block;
-	margin-bottom: 10px;
+	margin-bottom: 25px;
 }
 
 .datalist,
@@ -1080,9 +1108,9 @@ input.switchAddMode:disabled + label {
 	padding: 3px 10px;
 	outline: none !important;
 	border: none !important;
-	background: #2a2a2f;
+	background: rgba(42, 42, 47, 0.03);
 	border-radius: 5px 5px 0 0;
-	border-bottom: solid 2px #1a7bee !important;
+	border-bottom: solid 2px #ffb600 !important;
 }
 
 .input {
@@ -1092,7 +1120,7 @@ input.switchAddMode:disabled + label {
 
 input[type="text"]:-webkit-autofill,
 input[type="number"]:-webkit-autofill {
-	-webkit-box-shadow: 0 0 0 30px #2a2a2f inset !important;
+	-webkit-box-shadow: 0 0 0 30px #fff inset !important;
 	-webkit-text-fill-color: #696969 !important;
 }
 
@@ -1114,8 +1142,8 @@ button:disabled {
 .btn {
     font-size: 15px;
     border-radius: 5px;
-    background: #1a7bee;
-    color: #fff;
+    background: #ffb600;
+    color: #2A2A2F;
     padding: 7px 12px;
     outline: none!important;
     border: none!important;
@@ -1154,7 +1182,7 @@ button:disabled {
     height: 100%;
 }
 
-#notifBlock > .notif { 
+#notifBlock > .notif {
 	transform-origin: right top;
     cursor: pointer;
     pointer-events: auto;
@@ -1248,13 +1276,13 @@ button:disabled {
 #notifBlock > .notif.error {
     background: #da5e5e;
 }
-    
+
 #notifBlock > .notif.warn {
     background: #f1af4c;
 }
 
 #notifBlock > .notif.info {
-    background: #1a7bee;
+    background: #ffb600;
 }
 
 #notifBlock > .notif.success {
@@ -1277,7 +1305,7 @@ button:disabled {
 	color: #4caf50;
 }
 
-@keyframes notif-progress {   
+@keyframes notif-progress {
     0% {
         width: 0;
     }
@@ -1286,7 +1314,7 @@ button:disabled {
     }
 }
 
-@keyframes notif-show {   
+@keyframes notif-show {
     0% {
         opacity: 0;
         transform: scale(0) translateX(calc(100% + 10px));
@@ -1297,7 +1325,7 @@ button:disabled {
     }
 }
 
-@keyframes notif-hide {   
+@keyframes notif-hide {
     0% {
         opacity: 1;
         transform: scale(1) translateX(0);
@@ -1317,18 +1345,18 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-track {
-	background-color: #2A2A2F;
+	background-color: #fff;
 	border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
 	/*border-radius: 0px;*/
-	background: #1a7bee;
+	background: #ffb600;
 	/*border-radius: 2px;*/
 }
 
 ::-webkit-scrollbar-thumb:hover{
-	background-color:#1a7bee;
+	background-color:#ffb600;
 }
 
 ::-webkit-resizer{
