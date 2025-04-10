@@ -153,7 +153,7 @@ async function checkAll(first) {
                     // Multi account select
                     clearInterval(timer)
 
-                    const needAccount = document.querySelector(`.vkuiSimpleCell[role="button"][data-test-id="account-item-${project.vkAccountId}"]`)
+                    const needAccount = document.querySelector(`div[role="button"][data-test-id="account-item-${project.vkAccountId}"]`)
 
                     if (needAccount) {
                         needAccount.click()
