@@ -57,6 +57,28 @@ async function vote(first) {
     if (document.querySelector('#vote .h-captcha') && first) return
 
 
+    document.getElementById('openModal').click()
     document.getElementById('game_user').value = project.nick
-    document.querySelector('#submit').click()
+    await wait(500)
+    await dragIntoDrop()
+    await wait(500)
+    document.querySelector('#submitVote').click()
+}
+
+async function dragIntoDrop({
+    dragSel = '#draggable-item',
+    dropSel = '#drop-area'
+} = {}) {
+    const drag = await waitForSelector(dragSel);
+    const drop = await waitForSelector(dropSel);
+
+    // режим 1: HTML5 DnD
+    try {
+        const ok = await tryHtml5DnD(drag, drop);
+        if (ok) return true;
+    } catch {}
+
+    // режим 2: чисто мышиный drag (как руками)
+    const ok2 = await tryMouseDrag(drag, drop);
+    return ok2;
 }

@@ -157,6 +157,9 @@ function run() {
             } else if (body.querySelector('#challenge-stage span.mark')) {
                 clearInterval(timer7)
                 body.querySelector('#challenge-stage span.mark').click()
+            } else if (body.querySelector('.main-wrapper span.cb-i')) {
+                clearInterval(timer7)
+                body.querySelector('.main-wrapper span.cb-i').click()
             }
         }, 1000)
 

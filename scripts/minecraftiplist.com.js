@@ -2,8 +2,8 @@ async function vote(first) {
     if (first) return
 
     const project = await getProject()
-    document.querySelector('#username').value = project.nick
-    document.querySelector('button[type="submit"] img[alt="Login"]').parentElement.click()
+    await userFillInput(document.querySelector('.popup input[autocomplete="username"]'), project.nick)
+    document.querySelector('.popup button[type="submit"]').click()
 }
 
 const timer = setInterval(() => {

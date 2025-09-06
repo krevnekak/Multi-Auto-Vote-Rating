@@ -275,10 +275,18 @@ var allProjects = {
     'minecraftiplist.com': {
         pageURL: (project) => 'https://www.minecraftiplist.com/server/' + project.id,
         voteURL: (project) => 'https://www.minecraftiplist.com/server/' + project.id + '/vote',
-        projectName: (doc) => doc.querySelector('.server-info-title').innerText,
+        projectName: (doc) => doc.querySelector('head > title').textContent,
         exampleURL: () => ['https://www.minecraftiplist.com/server/', 'PurplePrison1SponsoredServer-5020', '/vote'],
         parseURL: (url) => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hours: 24})
+    },
+    'servers-minecraft.com': {
+        pageURL: (project) => 'https://servers-minecraft.com/server/' + project.id,
+        voteURL: (project) => 'https://servers-minecraft.com/vote/' + project.id,
+        projectName: (doc) => doc.querySelector('head > title').textContent.replace('Vote for ', ''),
+        exampleURL: () => ['https://servers-minecraft.com/vote/', '2539'],
+        parseURL: (url) => ({id: url.pathname.split('/')[2]}),
+        timeout: () => ({hours: 7})
     },
     'topminecraftservers.org': {
         pageURL: (project) => 'https://topminecraftservers.org/server/' + project.id,

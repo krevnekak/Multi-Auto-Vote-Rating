@@ -441,6 +441,213 @@ function isUsedTranslator() {
     return false
 }
 
+async function waitForSelector(sel, t = 5000) {
+    const s = performance.now();
+    while (performance.now() - s < t) {
+        const el = document.querySelector(sel);
+        if (el) return el;
+        await wait(50);
+    }
+    throw new Error('timeout: ' + sel);
+}
+
+// Fire events
+function fire(type, target, init = {}) {
+    let ev;
+    try {
+        if (type.startsWith('pointer')) {
+            ev = new PointerEvent(type, {bubbles:true,cancelable:true,composed:true,buttons:1, ...init});
+        } else if (type.startsWith('mouse')) {
+            ev = new MouseEvent(type, {bubbles:true,cancelable:true,composed:true,buttons:1, ...init});
+        } else if (type.startsWith('drag')) {
+            ev = new DragEvent(type, {bubbles:true,cancelable:true,composed:true, ...init});
+        } else if (type.startsWith('key')) {
+            ev = new KeyboardEvent(type, {bubbles:true,cancelable:true,composed:true,
+                key: init.key ?? '', code: init.code ?? '', ...init
+            });
+            Object.defineProperty(ev, 'keyCode', {get:()=> init.keyCode ?? (init.key?.charCodeAt?.(0) || 0)});
+            Object.defineProperty(ev, 'which',   {get:()=> init.which   ?? (init.key?.charCodeAt?.(0) || 0)});
+            Object.defineProperty(ev, 'charCode',{get:()=> init.charCode?? (type==='keypress' ? (init.key?.charCodeAt?.(0) || 0) : 0)});
+        } else if (type === 'beforeinput' || type === 'input') {
+            ev = new InputEvent(type, {bubbles:true,cancelable:true,composed:true,
+                inputType: init.inputType ?? 'insertText', data: init.data ?? null, ...init
+            });
+        } else if (type.startsWith('composition')) {
+            ev = new CompositionEvent(type, {bubbles:true,cancelable:true,data:init.data ?? ''});
+        } else if (type === 'change') {
+            ev = new Event('change', {bubbles:true});
+        } else {
+            ev = new Event(type, {bubbles:true, cancelable:true});
+        }
+    } catch {
+        ev = new Event(type, {bubbles:true, cancelable:true});
+        Object.assign(ev, init);
+    }
+    return target.dispatchEvent(ev);
+}
+
+function centerRect(el){ const r = el.getBoundingClientRect();
+    return { x: Math.floor(r.left + r.width/2), y: Math.floor(r.top + r.height/2) };
+}
+
+// Drag and drop
+async function tryHtml5DnD(drag, drop) {
+    const from = centerRect(drag);
+    const to   = centerRect(drop);
+
+    const dt = new DataTransfer();
+    dt.setData('text/plain', drag.id || 'payload');
+    dt.effectAllowed = 'all'; dt.dropEffect = 'move';
+
+    // старт
+    fire('pointerdown', drag, {clientX:from.x, clientY:from.y});
+    fire('mousedown',    drag, {clientX:from.x, clientY:from.y});
+    await wait(10);
+
+    const started = fire('dragstart', drag, {clientX:from.x, clientY:from.y, dataTransfer: dt});
+    // если dragstart не принят — этот режим не подходит
+    if (!started) return false;
+
+    // путь
+    const steps = 8;
+    for (let i=1;i<=steps;i++){
+        const cx = Math.round(from.x + (to.x - from.x)*i/steps);
+        const cy = Math.round(from.y + (to.y - from.y)*i/steps);
+        const el = document.elementFromPoint(cx, cy) || document.body;
+        fire('dragenter', el, {clientX:cx, clientY:cy, dataTransfer: dt});
+        fire('dragover',  el, {clientX:cx, clientY:cy, dataTransfer: dt});
+        await wait(8);
+    }
+
+    // drop
+    const overOk = !fire('dragover', drop, {clientX:to.x, clientY:to.y, dataTransfer: dt}); // preventDefault → false
+    fire('drop', drop, {clientX:to.x, clientY:to.y, dataTransfer: dt});
+    await wait(8);
+    fire('dragend', drag, {clientX:to.x, clientY:to.y, dataTransfer: dt});
+    fire('mouseup', drop, {clientX:to.x, clientY:to.y});
+    return overOk || drop.contains(drag);
+}
+
+async function tryMouseDrag(drag, drop) {
+    drag.scrollIntoView({block:'center', inline:'center'});
+    drop.scrollIntoView({block:'center', inline:'center'});
+    await wait(50);
+
+    const from = centerRect(drag);
+    const to   = centerRect(drop);
+
+    // нажали
+    fire('pointerdown', drag, {clientX:from.x, clientY:from.y});
+    fire('mousedown',   drag, {clientX:from.x, clientY:from.y});
+
+    // тянем: шлём move и на document, и на элемент под курсором
+    const steps = 14;
+    let lastEl = drag;
+    for (let i=1;i<=steps;i++){
+        const cx = Math.round(from.x + (to.x - from.x)*i/steps);
+        const cy = Math.round(from.y + (to.y - from.y)*i/steps);
+        const under = document.elementFromPoint(cx, cy) || document.body;
+
+        fire('pointermove', document, {clientX:cx, clientY:cy});
+        fire('mousemove',   document, {clientX:cx, clientY:cy});
+
+        if (under !== lastEl) {
+            // имитируем заход курсора (многие либы реагируют)
+            fire('mouseover', under, {clientX:cx, clientY:cy});
+            fire('mouseenter', under, {clientX:cx, clientY:cy});
+            lastEl = under;
+        }
+        // дубль на сам элемент под курсором — некоторые обработчики висят на нём
+        fire('pointermove', under, {clientX:cx, clientY:cy});
+        fire('mousemove',   under, {clientX:cx, clientY:cy});
+        await wait(8);
+    }
+
+    // «наведены» на drop — завершаем
+    fire('mouseover', drop, {clientX:to.x, clientY:to.y});
+    fire('mouseenter', drop, {clientX:to.x, clientY:to.y});
+    await wait(10);
+    fire('mouseup', drop, {clientX:to.x, clientY:to.y});
+    fire('pointerup', drop, {clientX:to.x, clientY:to.y});
+
+    // признак успеха: элемент оказался внутри drop или у drop изменилась разметка
+    return drop.contains(drag) || drop.querySelector('#draggable-item') != null;
+}
+
+// Человеческая печать через ивенты
+function setNativeValue(el, value) {
+    const proto = Object.getOwnPropertyDescriptor(el.__proto__, 'value');
+    if (proto && proto.set) proto.set.call(el, value);
+    else el.value = value;
+}
+
+async function typeText(el, text, {delay = 20, fromStart = false} = {}) {
+    el.focus();
+    const r = el.getBoundingClientRect();
+    const cx = Math.floor(r.left + 10), cy = Math.floor(r.top + r.height/2);
+    el.scrollIntoView({block:'center', inline:'center'});
+    await wait(10);
+    el.dispatchEvent(new PointerEvent('pointerdown', {bubbles:true,clientX:cx,clientY:cy,buttons:1}));
+    el.dispatchEvent(new MouseEvent('mousedown', {bubbles:true,clientX:cx,clientY:cy,buttons:1}));
+    el.dispatchEvent(new PointerEvent('pointerup', {bubbles:true,clientX:cx,clientY:cy}));
+    el.dispatchEvent(new MouseEvent('mouseup', {bubbles:true,clientX:cx,clientY:cy}));
+    el.dispatchEvent(new MouseEvent('click', {bubbles:true,clientX:cx,clientY:cy}));
+
+    if (fromStart) el.setSelectionRange(0, 0);
+    else el.setSelectionRange(el.value.length, el.value.length);
+
+    for (const ch of text) {
+        const key = ch === '\n' ? 'Enter' : ch === '\t' ? 'Tab' : ch;
+        const code = key === 'Enter' ? 'Enter' : key === 'Tab' ? 'Tab' : 'Key' + (/[a-z]/i.test(ch) ? ch.toUpperCase() : '');
+        fire('keydown', el, {key, code, keyCode: key === 'Enter' ? 13 : ch.charCodeAt?.(0) || 0, which: ch.charCodeAt?.(0) || 0});
+
+        const selStart = el.selectionStart, selEnd = el.selectionEnd;
+        const inputType = key === 'Enter' ? 'insertParagraph' : 'insertText';
+        const data = key === 'Enter' ? '\n' : ch;
+
+        const proceed = fire('beforeinput', el, {inputType, data});
+        if (proceed) {
+            if (typeof el.setRangeText === 'function') el.setRangeText(data, selStart, selEnd, 'end');
+            else {
+                setNativeValue(el, el.value.slice(0, selStart) + data + el.value.slice(selEnd));
+                el.setSelectionRange(selStart + data.length, selStart + data.length);
+            }
+            fire('input', el, {inputType, data});
+            fire('keypress', el, {key, code, charCode: data.charCodeAt?.(0) || 0, keyCode: data.charCodeAt?.(0) || 0, which: data.charCodeAt?.(0) || 0});
+        }
+        fire('keyup', el, {key, code});
+        if (delay) await wait(delay);
+    }
+}
+
+async function userFillInput(selectorOrEl, text, {
+    delay = 20, clear = true, blurAfter = true
+} = {}) {
+    const el = typeof selectorOrEl === 'string' ? await waitForSelector(selectorOrEl) : selectorOrEl;
+    if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) {
+        throw new Error('target is not input/textarea');
+    }
+
+    el.focus();
+
+    if (clear) {
+        el.setSelectionRange(0, el.value.length);
+        const ok = fire('beforeinput', el, { inputType: 'deleteContent' });
+        if (ok) {
+            setNativeValue(el, '');
+            el.setSelectionRange(0, 0);
+            fire('input', el, { inputType: 'deleteContent', data: null });
+        }
+    }
+
+    await typeText(el, text, { delay });
+
+    if (blurAfter) {
+        el.blur();
+        fire('change', el);
+    }
+}
+
 // TODO возвращаем хоть какой-то результат в background при executeScript во избежании ошибки "Could not establish connection. Receiving end does not exist"
 // noinspection BadExpressionStatementJS
 true
